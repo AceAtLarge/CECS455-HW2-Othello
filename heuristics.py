@@ -53,7 +53,7 @@ def evaluate_position(board: Board, player: int) -> float:
     game_progress = total_pieces / (board.size * board.size)
     coin_parity = (player_pieces - opponent_pieces) * (10 * game_progress)
 
-    # 2. Mobility (number of legal moves)
+    # 2. Mobility (number of legal moves left )
     player_moves = len(board.get_legal_moves(player))
     opponent_moves = len(board.get_legal_moves(opponent))
 

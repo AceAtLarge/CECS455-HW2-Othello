@@ -73,7 +73,7 @@ class Greedy1PlyAgent(Agent):
 
 class MinimaxAgent(Agent):
     """
-    Agent using minimax with alpha-beta pruning and iterative deepening.
+    Agent using minimax with alpha-beta pruning and iterative deepening
     """
 
     def __init__(self, use_alpha_beta: bool = True):
@@ -119,7 +119,7 @@ class MinimaxAgent(Agent):
                     best_move = move
                     self.max_depth_reached = depth
 
-                # Check if we're out of time
+                # Checks if we're out of time
                 if time.perf_counter() >= deadline:
                     break
 
@@ -185,7 +185,7 @@ class MinimaxAgent(Agent):
                 best_score = score
                 best_move = move
 
-            # Alpha-beta update
+            # Alpha-beta update here
             if self.use_alpha_beta:
                 alpha = max(alpha, best_score)
                 if beta <= alpha:

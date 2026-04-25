@@ -1,228 +1,170 @@
-# HW2: Othello
+# Othello with Minimax AI
 
-Details
+A complete implementation of Othello with AI agents using minimax search with alpha-beta pruning and iterative deepening.
 
-# HW: Othello with Minimax
+## Features
 
-## Overview
+- ✅ Complete Othello game rules implementation
+- ✅ Minimax search with alpha-beta pruning
+- ✅ Iterative deepening with time control
+- ✅ Multiple AI agents (Random, Greedy, Minimax)
+- ✅ Human vs AI and AI vs AI modes
+- ✅ Strategic heuristic evaluation function
+- ✅ ASCII board rendering
 
-Build a **playable** Othello game where:
+## Requirements
 
--   A human can play against your AI **or** the AI can play itself.
-    
--   Your AI chooses moves with **minimax** (alpha–beta optional but encouraged).
-    
--   The AI must respect a **per-move time limit** in seconds.
-    
+- Python 3.7 or higher
+- No external dependencies required (uses only Python standard library)
 
-Design your **own heuristic evaluation** for non-terminal positions. The fun bit: making it _play smart_ under time pressure.
+## Installation
 
----
+No installation required. Simply clone or download the files and run:
 
-## Learning goals
+```bash
+python main.py --mode human-ai
+```
 
-1.  Implement complete [**game rules** Links to an external site.](https://www.worldothello.org/about/about-othello/othello-rules/official-rules/english) and legal move generation.
-    
-2.  Use **minimax** (with optional **alpha–beta**) and **iterative deepening** under a time budget.
-    
-3.  Design, measure, and defend a **heuristic evaluation**.
-    
-4.  Build a **human-playable** loop and a **self-play** harness.
-    
+## Usage
 
----
+### Basic Command Format
 
-## The game
+```bash
+python main.py --mode [human-ai | ai-ai] --seconds <time> --ai1 <agent> --ai2 <agent> --first [1|2]
+```
 
--   [https://www.worldothello.org/about/about-othello/othello-rules/official-rules/english Links to an external site.](https://www.worldothello.org/about/about-othello/othello-rules/official-rules/english)
-    
+### Arguments
 
----
+- `--mode`: Game mode
+  - `human-ai`: Human vs AI
+  - `ai-ai`: AI vs AI (for testing/tournaments)
 
-## Program requirements
+- `--seconds`: Time limit per move in seconds (default: 1.0)
+  - Example: `--seconds 2.5`
 
-### CLI
+- `--ai1`: Agent for Player 1 (BLACK) in ai-ai mode (default: MinimaxAgent)
+  - Available: `MinimaxAgent`, `RandomAgent`, `Greedy1PlyAgent`, `MinimaxAgent_NoAB`
 
-Your program must support:
+- `--ai2`: Agent for Player 2 (WHITE) (default: RandomAgent)
+  - Same options as ai1
 
-`python main.py --mode [human-ai | ai-ai] --seconds 2.0 --ai1 <AgentA> --ai2 <AgentB> --first [1|2]`
+- `--first`: Which player goes first (default: 1)
+  - `1`: Player 1 (BLACK) goes first
+  - `2`: Player 2 (WHITE) goes first
+  - In human-ai mode, determines if human plays as BLACK or WHITE
 
--   `--seconds S` = **per-move time limit** (float seconds).
-    
--   `--mode human-ai` → human plays as Player 1 by default (toggle with `--first`).
-    
--   `--mode ai-ai` → run self-play matches (useful for grading).
-    
--   `--ai1/--ai2` = agent class names (e.g., `RandomAgent`, `MinimaxAgent`).
-    
+- `--quiet`: Suppress output (useful for batch testing)
 
-### Time control (must-have)
+### Example Usages
 
--   Use **iterative deepening**: search depth 1, 2, 3, … until time expires; return the **best fully evaluated move** so far.
-    
--   Provide the agent with either:
-    
-    -   a callable `time_remaining() -> float` in seconds, **or**
-        
-    -   a hard deadline timestamp `deadline = now + S`.
-        
--   If the deadline hits mid-search, **immediately** return the best move from the last completed depth.
-    
--   If no move was completed (shouldn’t happen unless S≈0), pick any legal move.
-    
+#### 1. Human vs AI (Human plays as BLACK)
+```bash
+python main.py --mode human-ai --seconds 1.0
+```
 
-### Architecture (suggested)
+#### 2. Human vs AI (Human plays as WHITE)
+```bash
+python main.py --mode human-ai --seconds 1.0 --first 2
+```
 
-`board.py # board state, legal moves, apply/undo, terminal detection, winner`
+#### 3. AI vs AI (Minimax vs Random)
+```bash
+python main.py --mode ai-ai --seconds 1.0 --ai1 MinimaxAgent --ai2 RandomAgent
+```
 
-`agents.py # base Agent, RandomAgent (baseline), MinimaxAgent (yours)`
+#### 4. AI vs AI (Two Minimax agents with different time limits)
+```bash
+python main.py --mode ai-ai --seconds 0.5 --ai1 MinimaxAgent --ai2 MinimaxAgent
+```
 
-`heuristics.py # your evaluation function(s)`
+#### 5. Quiet mode (no output, for batch testing)
+```bash
+python main.py --mode ai-ai --seconds 1.0 --quiet
+```
 
-`game.py # game loop (human/AI, AI/AI), rendering (ASCII or lightweight GUI)`
+## How to Play (Human Mode)
 
-`main.py # CLI wiring`
+When it's your turn, you'll see:
+1. The current board state
+2. List of legal moves as (row, col) coordinates
+3. Prompt to enter your move
 
----
+Enter your move as two numbers separated by space:
+```
+Enter your move as 'row col' (e.g., '3 4'): 3 4
+```
 
-## Minimax (with optional alpha–beta)
+Board coordinates:
+- Rows: 0-7 (top to bottom)
+- Cols: 0-7 (left to right)
+- X = BLACK (Player 1)
+- O = WHITE (Player 2)
+- . = Empty
 
-**Required:** minimax with **iterative deepening** and a **heuristic** for non-terminal nodes.  
-**Optional (extra credit):** alpha–beta pruning.
+## File Structure
 
-**Alpha–beta tip:** Order moves “center-first” to prune more in Othello.
+```
+.
+├── main.py          # CLI entry point and argument parsing
+├── game.py          # Game loop and human player interface
+├── board.py         # Board state, legal moves, game rules
+├── agents.py        # AI agents (Random, Minimax, Greedy)
+├── heuristics.py    # Evaluation functions
+├── test_othello.py  # Tests
+└── README.md        # This file
+```
 
----
+## AI Implementation Details
 
-## Heuristic design (you choose!)
+### Minimax Agent
 
-You must craft and justify a static evaluation `score(board)` from the perspective of the current player. Ideas:
+The `MinimaxAgent` uses:
 
--   **Number of coins**
--   **Number of moves possible**
--   **Number of pieces immune to turning**
--   **Corner control:** assign points to control of each of the four corners of the board.
-    
--   **Near-corner scoring:** placing coins directly next to the four corners might give the corner to the other player, so weigh them negatively.
-    
--   **Immediate win/loss checks:** +/-∞ (handled as terminal).
-    
+1. **Iterative Deepening**: Searches depth 1, 2, 3, ... until time runs out
+2. **Alpha-Beta Pruning**: Reduces nodes explored by ~50-90%
+3. **Time Control**: Respects hard deadline using `time.perf_counter()`
+4. **Move Ordering**: Center-first ordering for better pruning
 
----
+### Heuristic Evaluation
 
-## Rendering
+The evaluation function combines multiple strategic factors:
 
--   **ASCII** is fine (print board after each move).
-    
--   Optional: lightweight GUI (e.g., Pygame). Don’t let the UI block the search thread if you run timers.
-    
+1. **Coin Parity** (10-50 points): Piece count difference
+   - More important in late game
+   
+2. **Mobility** (0-100 points): Number of legal moves
+   - More important in early game
+   
+3. **Corner Control** (0-100 points): Corners are extremely valuable
+   - Corners cannot be flipped
+   
+4. **Positional Weights**: Strategic square values
+   - Corners: +100
+   - Near-corners: -20 to -50 (dangerous, can give corners away)
+   - Edges: +10
+   - Center: +5
+   
+5. **Stability** (0-100 points): Pieces that cannot be flipped
+   - Simplified metric based on valueable corners and edge pieces
 
----
+The weights are adjusted based on game progress (early vs late game).
 
-## Baselines (include these)
 
--   `RandomAgent`: chooses a random legal column.
-    
--   `Greedy1PlyAgent` (optional but helpful for testing): pick the move with the highest heuristic after 1 ply (no opponent response).
-    
+## Testing
 
-Your `MinimaxAgent` should **consistently beat `RandomAgent`** under the same time limit.
+Run a quick test match:
 
----
+```bash
+# Minimax should consistently beat Random
+python main.py --mode ai-ai --seconds 1.0 --ai1 MinimaxAgent --ai2 RandomAgent
 
-## Correctness checks (must pass)
+# Test with shorter time limit
+python main.py --mode ai-ai --seconds 0.25 --ai1 MinimaxAgent --ai2 RandomAgent
+```
 
-1.  **Rules**: no illegal moves; correct gravity; correct win detection in all directions.
-    
-2.  **Draw**: full board → draw.
-    
-3.  **Time**: never exceed the per-move time by more than ~50ms (tolerance).
-    
-4.  **Determinism**: with a fixed random seed for tie-breaks, same position → same move.
-    
 
----
+## Credits
 
-## Experiments to run (report in write-up)
+Implements the official Othello rules from the World Othello Federation.
+Architecture suggested from Professor.
 
-1.  **Strength vs baselines:** 50 games vs `RandomAgent` (25 starting first, 25 second) at `--seconds 1.0`. Report win/draw/loss.
-    
-2.  **Heuristic ablation:** briefly compare two versions of your heuristic (e.g., with/without center weighting).
-    
-3.  **Search depth vs time:** log average completed depth and nodes/second at 0.25s, 0.5s, 1.0s per move.
-    
-4.  **Alpha–beta (if used):** report average nodes visited vs plain minimax (same positions, same ordering).
-    
-
----
-
-## Deliverables
-
--   Code (see structure above).
-    
-    -   Submission modalities:
-        
-        -   -   In order to grade your assignment efficiently, I have to be able to run your assignment without major effort.
-            -   For this reason, the following languages and document formats are excluded and will not be allowed under any circumstances. **Submitting your assignment in any of these will result in a grade of zero**:
-                -   Languages: APL, COBOL, JOVIAL, Prolog.
-                -   Formats: Jupyter Notebook (too cumbersome to set up and work with).
-                -   IDE dependency: Code that can only be compiled and/or run from within a specific IDE.
-                -   OS or architecture dependency: Code that can only be compiled and/or run on one OS or only one specific architecture (e.g., x64 or ARM).
-                -   Any language or format that can only be used, read, debugged etc. to the full extent using software that is only commercially available and not provided by CSULB free of charge to students.
--   `README.md`: how to run human vs AI and AI vs AI; flags; any dependencies.
-    
--   `writeup.pdf` (≤2 pages):
-    
-    -   Explain your heuristic, weights, and why they make sense for Othello.
-        
-    -   Summarize experiment results (tables/plots welcome).
-        
-    -   Note edge cases you handled (full columns, simultaneous wins not possible, etc.).
-        
-
----
-
-## Grading (20 pts + 3 extra credit)
-
--   **Game correctness (rules, terminal detection, legal moves): 6**
-    
--   **Time-aware minimax (iterative deepening; respects deadline): 4**
-    
--   **Heuristic quality & agent strength: 4**
-    
-    -   Beats `RandomAgent` in majority of games; sensible evaluation design & justification.
-        
--   **Code quality (structure, clarity, comments, small functions, no blocking UI): 4**
-    
--   **Write-up (clarity, experiments, insight): 2**
-    
--   **Extra credit for alpha-beta pruning: 3**
-    -   **Must be clearly commented in the code**
-
----
-
----
-
-## Testing checklist
-
--   Drop into full columns → rejected.
-    
--   Horizontal/vertical/diagonal wins detected.
-    
--   Time = 0.1s still returns a move reliably (iterative deepening works).
-    
--   Self-play (`ai-ai`) runs to completion with consistent results under a fixed seed.
-    
-
----
-
-## Tips
-
--   Use **`time.perf_counter()`** for deadlines.
-    
--   Always keep the **best move from the last fully completed depth**.
-    
--   Start move ordering from the **center column outward** to boost alpha–beta pruning.
-    
--   Keep your heuristic **fast**—you’ll call it millions of times.
-    
